@@ -23,6 +23,7 @@
 5. 配置文件
 * 使用：toml
 * 介绍：https://godoc.org/github.com/BurntSushi/toml
+* 说明：如果docker部署可以通过jenkins挂载配置文件进去，否则使用viper或者confd
 
 6. 依赖包管理-govendor
 * 使用：go get github.com/kardianos/govendor
