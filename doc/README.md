@@ -28,7 +28,7 @@
 6. 依赖包管理-govendor
 * 使用：go get github.com/kardianos/govendor
 * 介绍：https://github.com/kardianos/govendor  
-https://godoc.org/github.com/kardianos/govendor
+　　　https://godoc.org/github.com/kardianos/govendor
      
 7. 单元测试工具-gotests
 * 使用：go get github.com/cweill/gotests
