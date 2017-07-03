@@ -1,4 +1,4 @@
-#开发流程
+# 开发流程
 1. go版本
 * 1.8.3
 
@@ -34,3 +34,6 @@
 * 使用：go get github.com/cweill/gotests
 * 介绍：https://github.com/cweill/gotests  
 　　　https://godoc.org/github.com/cweill/gotests
+
+8. 库里已添加thrift的开发包
+Init时需要传入handler生成的processor
