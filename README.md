@@ -19,7 +19,7 @@
 
 4. 日志库<br />
 * 日志库：github.com/cihub/seelog
-* 介绍：godoc.org/github.com/cihub/seelog
+* 介绍：https://godoc.org/github.com/cihub/seelog
 
 <!-- 如果docker部署可以通过jenkins挂载配置文件进去
 否则使用viper或者confd -->
@@ -38,5 +38,8 @@
 * 介绍：https://github.com/cweill/gotests  
 　　　https://godoc.org/github.com/cweill/gotests
 
-8. 库里已添加thrift的开发包
+8. thrift开发包
 Init时需要传入handler生成的processor
+
+9. jsonrpc2开发包
+* 使用：请参考目录下的example
