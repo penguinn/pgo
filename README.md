@@ -38,7 +38,7 @@
 * 介绍：https://github.com/cweill/gotests  
 　　　https://godoc.org/github.com/cweill/gotests
 
-8. thrift开发包
+8. thrift开发包  
 Init时需要传入handler生成的processor
 
 9. jsonrpc2开发包  
