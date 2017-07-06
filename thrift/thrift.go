@@ -1,4 +1,4 @@
-package pThrift
+package thrift
 
 import (
 	"git.apache.org/thrift.git/lib/go/thrift"
@@ -9,13 +9,15 @@ import (
 	"log"
 )
 
-func Init(processor thrift.TProcessor) {
+var Server *thrift.TSimpleServer
+
+func Init(processor interface{}) {
 	flag.Usage = Usage
 	protocol := flag.String("P", "binary", "Specify the protocol (binary, compact, json, simplejson)")
 	framed := flag.Bool("framed", true, "Use framed transport")
 	buffered := flag.Bool("buffered", false, "Use buffered transport")
 	secure := flag.Bool("secure", false, "Use tls secure transport")
-	addr := flag.String("addr", "9000", "Service port")
+	addr := flag.String("addr", ":9000", "Service port")
 
 	flag.Parse()
 
@@ -57,7 +59,7 @@ func Usage() {
 	fmt.Fprint(os.Stderr, "\n")
 }
 
-func RunServer(transportFactory thrift.TTransportFactory, protocolFactory thrift.TProtocolFactory, addr string, secure bool, processor thrift.TProcessor) error {
+func RunServer(transportFactory thrift.TTransportFactory, protocolFactory thrift.TProtocolFactory, addr string, secure bool, processor interface{}) error {
 	var transport thrift.TServerTransport
 	var err error
 	if secure {
@@ -79,10 +81,15 @@ func RunServer(transportFactory thrift.TTransportFactory, protocolFactory thrift
 	//注册相应的处理接口，处理客户端请求
 	//handler.Init()
 	//processor := MedPush.NewMedPushProcessor(handler)
-	server := thrift.NewTSimpleServer4(processor, transport, transportFactory, protocolFactory)
+	Server = thrift.NewTSimpleServer4(processor.(thrift.TProcessor), transport, transportFactory, protocolFactory)
 
 	log.Println("Starting the simple server... on ", addr)
-	err = server.Serve()
+	//err = server.Serve()
 
+	return err
+}
+
+func Run() error {
+	err := Server.Serve()
 	return err
 }

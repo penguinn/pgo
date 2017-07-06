@@ -9,12 +9,12 @@ import (
 	"github.com/penguinn/pgo/router"
 	"errors"
 	"net/http"
+	"github.com/penguinn/pgo/template"
+	"github.com/penguinn/pgo/log"
+	"github.com/penguinn/pgo/thrift"
 )
 
 func Init(configFile string, controller interface{}) error {
-	if controller != nil{
-		router.Init(controller)
-	}
 	viper.SetConfigFile(configFile)
 	viper.AutomaticEnv()
 
@@ -27,6 +27,29 @@ func Init(configFile string, controller interface{}) error {
 		log.Println("Using config file:", viper.ConfigFileUsed())
 	}
 
+	//初始化日志
+	pLog.Init(viper.GetString("server.log"))
+
+	//初始化服务类型
+	runMode := viper.GetString("server.type")
+	if len(runMode) != 0{
+		switch runMode {
+		case "web":
+			if controller != nil{
+				router.Init(controller)
+			}
+		case "thrift":
+			if controller != nil {
+				thrift.Init(controller)
+			}
+		case "jsonrpc2":
+			//todo
+		default:
+			return errors.New("run error with type："+runMode)
+		}
+	}
+
+	//初始化组件
 	if len(viper.GetStringMap("components.mysql")) != 0 {
 		app.Register("mysql", mysql.Creator)
 	}
@@ -35,6 +58,9 @@ func Init(configFile string, controller interface{}) error {
 	}
 	if len(viper.GetStringMap("components.router")) != 0 {
 		app.Register("router", router.Creator)
+	}
+	if len(viper.GetStringMap("components.template")) != 0 {
+		app.Register("template", template.Creator)
 	}
 	//fmt.Println(viper.GetStringMap("components.mysql"))
 	return app.ConfigureAll(viper.GetStringMap("components"))
@@ -50,7 +76,10 @@ func Run() error {
 				log.Fatal("ListenAndServer: ", err)
 			}
 		case "thrift":
-			//todo
+			err := thrift.Run()
+			if err != nil{
+				log.Fatal("RunThriftServer: ", err)
+			}
 		case "jsonrpc2":
 			//todo
 		default:
