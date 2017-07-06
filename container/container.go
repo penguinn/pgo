@@ -1,10 +1,14 @@
-package database
+package container
 
 import (
 	"sync"
 
 	"github.com/mitchellh/mapstructure"
 	"errors"
+)
+
+var (
+	DefaultContainer = NewContainer()
 )
 
 type Creator func(cfg interface{}) (interface{}, error)
@@ -77,8 +81,10 @@ func (this *Container) create(cfg interface{}) (interface{}, error) {
 	if err != nil {
 		return nil, errors.New("can not trans interface: "+cfg.(string))
 	}
-	typ := ccfg["type"].(string)
-	delete(ccfg, "type")
+	typ, ok := ccfg["type"].(string)
+	if ok {
+		delete(ccfg, "type")
+	}
 	if creator, ok := this.creators[typ]; ok {
 		return creator(ccfg)
 	}
@@ -105,7 +111,9 @@ func (this *Container) ConfigureAll(cfg map[string]interface{}) error {
 		if err != nil {
 			return err
 		}
-		instances[k] = instance
+		if instance != nil {
+			instances[k] = instance
+		}
 	}
 	this.instances = instances
 	return nil
@@ -122,6 +130,8 @@ func (this *Container) GetContainer(name string) (*Container, error) {
 	return nil, errors.New(name +" not a Container instance")
 }
 
+
+//当传进来的type为container时，进入到这个Creator
 func (this *Container) Creator(cfg interface{}) (interface{}, error) {
 	cfgMap := make(map[string]interface{})
 	err := mapstructure.WeakDecode(cfg, &cfgMap)

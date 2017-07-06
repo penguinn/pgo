@@ -1,23 +1,24 @@
 package mongo
 
-import (
-	"gopkg.in/mgo.v2"
-)
-
-type MongoDB struct {
-	db 			*mgo.Database
-}
-
-func NewMongoDB(url, username, password string) (db *mgo.Database, err error){
-	session, err := mgo.Dial(url)
-	if err != nil{
-		return nil, err
-	}
-	session.Login(&mgo.Credential{Username:username, Password:password})
-	session.SetMode(mgo.Monotonic, true)
-	db = session.DB("test")
-	return
-}
+//import (
+//	"gopkg.in/mgo.v2"
+//)
+//
+//type MongoDB struct {
+//	db 			*mgo.Database
+//}
+//
+//func NewMongoDB(url, username, password string) (db *MongoDB, err error){
+//	session, err := mgo.Dial(url)
+//	if err != nil{
+//		return nil, err
+//	}
+//	session.Login(&mgo.Credential{Username:username, Password:password})
+//	session.SetMode(mgo.Monotonic, true)
+//	mdb = session.DB("test")
+//  db := &MongoDB{db:mdb}
+//	return
+//}
 /*
 创建的类以数据库为单位，example:
 type Hehe struct {

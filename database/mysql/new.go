@@ -1,31 +1,30 @@
 package mysql
 
-import (
-	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/jinzhu/gorm"
-	"fmt"
-)
-
-//创建的数据库打开sql日志，并会自动创建连接池，连接池最多空闲10个连接，最多有100个连接
-
-type MySQLDB struct {
-	DB   	*gorm.DB
-}
-
-func NewMySQLDB(host, password, user, database string) (mysqlDB *MySQLDB, err error){
-	args := fmt.Sprintf("%s:%s@tcp(%s)/%s", user, password, host, database)
-	db, err := gorm.Open("mysql", args)
-	if err != nil{
-		return nil, err
-	}
-	//db.SingularTable(true)
-	db.LogMode(true)
-	db.DB().SetMaxIdleConns(10)
-	db.DB().SetMaxOpenConns(100)
-	mysqlDB = &MySQLDB{DB:db}
-	return
-}
+//import (
+//	_ "github.com/jinzhu/gorm/dialects/mysql"
+//	"github.com/jinzhu/gorm"
+//	"fmt"
+//)
+//
+////创建的数据库打开sql日志，并会自动创建连接池，连接池最多空闲10个连接，最多有100个连接
+//
+//type MySQLDB struct {
+//	DB   	*gorm.DB
+//}
+//
+//func NewMySQLDB(host, password, user, database string) (mysqlDB *MySQLDB, err error){
+//	args := fmt.Sprintf("%s:%s@tcp(%s)/%s", user, password, host, database)
+//	db, err := gorm.Open("mysql", args)
+//	if err != nil{
+//		return nil, err
+//	}
+//	//db.SingularTable(true)
+//	db.LogMode(true)
+//	db.DB().SetMaxIdleConns(10)
+//	db.DB().SetMaxOpenConns(100)
+//	mysqlDB = &MySQLDB{DB:db}
+//	return
+//}
 
 /*
 此文件只负责创建数据库，表结构和orm函数写在其他文件，example:
