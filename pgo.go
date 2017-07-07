@@ -14,7 +14,7 @@ import (
 	"github.com/penguinn/pgo/thrift"
 )
 
-func Init(configFile string, controller interface{}) error {
+func Init(configFile string, args ...interface{}) error {
 	viper.SetConfigFile(configFile)
 	viper.AutomaticEnv()
 
@@ -35,15 +35,23 @@ func Init(configFile string, controller interface{}) error {
 	if len(runMode) != 0{
 		switch runMode {
 		case "web":
-			if controller != nil{
-				router.Init(controller)
+			if len(args) == 1{
+				router.InitHttp(args[0])
+			}else{
+				return errors.New("args error")
 			}
 		case "thrift":
-			if controller != nil {
-				thrift.Init(controller)
+			if len(args) == 1 {
+				thrift.Init(args[0])
+			} else{
+				return errors.New("args error")
 			}
 		case "jsonrpc2":
-			//todo
+			if len(args) == 1 {
+				router.InitRpc(args[0])
+			} else{
+				return errors.New("args error")
+			}
 		default:
 			return errors.New("run error with type："+runMode)
 		}
@@ -56,8 +64,11 @@ func Init(configFile string, controller interface{}) error {
 	if len(viper.GetStringMap("components.redis")) != 0 {
 		app.Register("redis", redis.Creator)
 	}
-	if len(viper.GetStringMap("components.router")) != 0 {
-		app.Register("router", router.Creator)
+	if len(viper.GetStringMap("components.router")) != 0 && viper.GetString("components.router.type") == "http"{
+		app.Register("http", router.CreatorHttp)
+	}
+	if len(viper.GetStringMap("components.router")) != 0 && viper.GetString("components.router.type") == "rpc"{
+		app.Register("rpc", router.CreatorRpc)
 	}
 	if len(viper.GetStringMap("components.template")) != 0 {
 		app.Register("template", template.Creator)
@@ -81,7 +92,10 @@ func Run() error {
 				log.Fatal("RunThriftServer: ", err)
 			}
 		case "jsonrpc2":
-			//todo
+			err := http.ListenAndServe(viper.GetString("server.addr"), nil)
+			if err != nil{
+				log.Fatal("ListenAndServer: ", err)
+			}
 		default:
 			return errors.New("run error with type："+runMode)
 		}

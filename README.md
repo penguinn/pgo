@@ -38,6 +38,10 @@
 * 介绍：https://github.com/cweill/gotests  
 　　　https://godoc.org/github.com/cweill/gotests
 
+8. 数据库介绍  
+* orm:  https://godoc.org/github.com/jinzhu/gorm
+* mongo: https://godoc.org/gopkg.in/mgo.v2
+* redis: https://godoc.org/github.com/go-redis/redis
 
 ## 开发实例 ##
 1. web开发  
@@ -47,3 +51,7 @@
 2. thrift开发 
 * 位置：https://github.com/penguinn/pgo-test/tree/master/RPCThrift  
 * 注意：初始化的时候需要传入通过handler生成的processor
+
+3. 基于http的jsonrpc2开发
+* 位置：https://github.com/penguinn/pgo-test/tree/master/JSONRPC2
+* 注意：初始化的时候需要传入需要注册的类

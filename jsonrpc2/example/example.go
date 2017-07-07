@@ -46,7 +46,7 @@ func serClient(wg sync.WaitGroup) {
 	time.Sleep(1)
 	client := jsonrpc2.NewClient("http://127.0.0.1:8080/v1/jrpc")
 	params := AddParams{AddStart:1, AddEnd:2}
-	resp, err := client.Call("Add", params, 1)
+	resp, err := client.Call("Echo.Add", params, 1)
 	if err != nil && resp.Error != nil{
 		log.Fatal(err)
 	}else {
@@ -63,7 +63,7 @@ func serClient(wg sync.WaitGroup) {
 func serServer(wg sync.WaitGroup) {
 	log.Println(1)
 	p := new(Echo)
-	jsonrpc2.RegisterMethod("Add", p.Add, AddParams{}, AddResult{})
+	jsonrpc2.RegisterMethod("Echo.Add", p.Add, AddParams{}, AddResult{})
 	http.HandleFunc("/v1/jrpc", jsonrpc2.Handler)
 	http.HandleFunc("/v1/jrpc/debug", jsonrpc2.DebugHandler)
 	if err := http.ListenAndServe(":8080", nil); err != nil {

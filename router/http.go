@@ -13,19 +13,15 @@ type ControllerMapsType map[string]reflect.Value
 
 var controllerMaps = make(ControllerMapsType)
 
-type RouterCfg struct {
+type RouterHttpCfg struct {
 	Path 		string
 	Handler 	string
 }
 
-func Init(controller interface{}) {
-	//var controller handler.Controller
-	//controllerMap := make(ControllerMapsType, 0)
-	//crMap := make(ControllerMapsType, 0)
+func InitHttp(controller interface{}) {
 	//创建反射变量，注意这里需要传入ruTest变量的地址；
 	//不传入地址就只能反射Routers静态定义的方法
 	vf := reflect.ValueOf(controller)
-	fmt.Println(vf.Kind())
 	vft := vf.Type()
 	//读取方法数量
 	mNum := vf.NumMethod()
@@ -37,7 +33,7 @@ func Init(controller interface{}) {
 	}
 }
 
-func NewRouter(cfg *RouterCfg) {
+func NewHttpRouter(cfg *RouterHttpCfg) {
 	container, ok := controllerMaps[cfg.Handler]
 	if ok{
 		handlerFunc := container.Interface().(func(http.ResponseWriter, *http.Request))
@@ -48,12 +44,12 @@ func NewRouter(cfg *RouterCfg) {
 
 }
 
-func Creator(cfg interface{}) (interface{}, error) {
+func CreatorHttp(cfg interface{}) (interface{}, error) {
 	cfgMap := cfg.(map[string]interface {})["default"]
 	for _, cfgTmp := range cfgMap.([]interface{}){
-		var routerCfg RouterCfg
+		var routerCfg RouterHttpCfg
 		mapstructure.WeakDecode(cfgTmp, &routerCfg)
-		NewRouter(&routerCfg)
+		NewHttpRouter(&routerCfg)
 	}
 	return nil, nil
 }
