@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/mitchellh/mapstructure"
-	"fmt"
 )
 
 type DB struct {
@@ -31,11 +30,17 @@ func NewDB(cfg *DBConfig) (*DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	db.Write.LogMode(true)
+	db.Write.DB().SetMaxIdleConns(10)
+	db.Write.DB().SetMaxOpenConns(100)
 	for dsn := range cfg.Reads {
 		rdb, err := gorm.Open(cfg.Driver, dsn)
 		if err != nil {
 			return nil, err
 		}
+		rdb.LogMode(true)
+		rdb.DB().SetMaxIdleConns(10)
+		rdb.DB().SetMaxOpenConns(100)
 		db.Reads = append(db.Reads, rdb)
 	}
 	return db, nil
@@ -55,7 +60,6 @@ func (this *DB) Get(write bool) *gorm.DB {
 }
 
 func Creator(cfg interface{}) (interface{}, error) {
-	fmt.Println(1)
 	var dbConfig DBConfig
 	err := mapstructure.WeakDecode(cfg, &dbConfig)
 	if err != nil {

@@ -12,6 +12,7 @@ import (
 	"github.com/penguinn/pgo/template"
 	"github.com/penguinn/pgo/log"
 	"github.com/penguinn/pgo/thrift"
+	"github.com/penguinn/pgo/database/mongo"
 )
 
 func Init(configFile string, args ...interface{}) error {
@@ -60,6 +61,9 @@ func Init(configFile string, args ...interface{}) error {
 	//初始化组件
 	if len(viper.GetStringMap("components.mysql")) != 0 {
 		app.Register("mysql", mysql.Creator)
+	}
+	if len(viper.GetStringMap("components.mongo")) != 0{
+		app.Register("mongo", mongo.Creator)
 	}
 	if len(viper.GetStringMap("components.redis")) != 0 {
 		app.Register("redis", redis.Creator)
