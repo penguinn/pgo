@@ -9,7 +9,7 @@
 * gogland
 
 3. 目录结构<br />
-![Alt text](./doc/construction.png "结构图片")
+![Alt text](./doc/construction.jpeg "结构图片")
 * 第一个红框表示GOPATH的路径
 * 第二个红框是go get下来生成的二进制文件保存的地方，最好把这个路径添加到PATH
 * 第三个红框是go get下载的github项目保存的目录
