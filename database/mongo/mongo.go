@@ -7,25 +7,34 @@ import (
 	"time"
 )
 
+type MongoDB struct {
+	Config 		*MongoConfig
+	Mgo 		*mgo.Database
+}
+
 type MongoConfig struct {
 	Addresses 		[]string
 	UserName 		string
 	Password 		string
+	Database		string
 }
 
-func NewMongoDB(cfg *MongoConfig) (db *mgo.Database, err error){
+func NewMongoDB(cfg *MongoConfig) (db *MongoDB, err error){
 	session, err := mgo.DialWithInfo(&mgo.DialInfo{
 		Addrs:cfg.Addresses,
 		Username:cfg.UserName,
 		Password:cfg.Password,
 		Timeout:2*time.Second,
 	})
+	db = &MongoDB{
+		Config:cfg,
+	}
 	if err != nil{
 		log.Fatal("New mongo error:", err)
-		return nil, err
+		return
 	}
 	session.SetMode(mgo.Monotonic, true)
-	db = session.DB("test")
+	db.Mgo = session.DB(cfg.Database)
 	return
 }
 
@@ -36,4 +45,10 @@ func Creator(cfg interface{}) (interface{}, error) {
 		return nil, err
 	}
 	return NewMongoDB(&mongoConfig)
+}
+
+func (this *MongoDB) Get(write bool) *mgo.Database {
+
+	return this.Mgo
+
 }

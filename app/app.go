@@ -2,14 +2,12 @@ package app
 
 import (
 	"html/template"
-
-	//log "github.com/Sirupsen/logrus"
 	"github.com/go-redis/redis"
-	//"github.com/go-ozzo/ozzo-routing"
-	"github.com/jinzhu/gorm"
 	"github.com/penguinn/pgo/container"
 	"github.com/penguinn/pgo/database/mysql"
 	"gopkg.in/mgo.v2"
+	"fmt"
+	"github.com/penguinn/pgo/database/mongo"
 )
 
 func Register(name string, creator container.Creator) {
@@ -83,10 +81,15 @@ type Model interface {
 	ConnName() string
 }
 
-func UseModel(m Model, write bool) *gorm.DB {
-	d, err := GetMySQL(m.ConnName())
+func UseModel(name string, m Model, write bool) interface{} {
+	d, err := Get(name, m.ConnName())
 	if err == nil {
-		return d.Get(write)
+		switch name {
+		case "mysql":
+			return d.(*mysql.DB).Get(write)
+		case "mongo":
+			return d.(*mongo.MongoDB).Get(write)
+		}
 	}
 	return nil
 }
