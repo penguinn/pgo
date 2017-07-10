@@ -43,6 +43,11 @@
 * mongo: https://godoc.org/gopkg.in/mgo.v2
 * redis: https://godoc.org/github.com/go-redis/redis
 
+## 配置文件详解 ##
+[实例模板][实例模板]  
+
+[实例模板]: https://github.com/penguinn/pgo/tree/master/doc/example.toml
+
 ## 开发实例 ##
 1. web开发  
 * 位置：https://github.com/penguinn/pgo-test/tree/master/web

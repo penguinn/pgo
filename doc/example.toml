@@ -1,0 +1,57 @@
+[server]
+#"web","thrift","jsonrpc2"
+type = "web"
+addr = ":8080"
+log = "example_seelog.xml"
+
+[components.router]
+type = "http"
+[[components.router.default]]
+Path = "/"
+Handler = "DefaultHandler"
+[[components.router.default]]
+Path = "/test"
+Handler = "TestHandler"
+
+[components.mysql]
+type = "container"
+[components.mysql.default]
+type = "mysql"
+Driver = "mysql"
+Dsn = "user:password@tcp(ip:port)/database"
+[components.mysql.local]
+type = "mysql"
+Driver = "mysql"
+Dsn = "user:password@tcp(ip:port)/database"
+
+[components.mongo]
+type = "container"
+[components.mongo.default]
+type = "mongo"
+Addresses = ["ip:port"]
+UserName = "med"
+Password = "password"
+Database = "test"
+
+[components.redis]
+type = "container"
+[components.redis.default]
+type = "redis"
+Address = "ip:port"
+Password = ""
+
+[components.logger]
+type = "container"
+
+[components.logger.default]
+type = "logger"
+Default = true
+FileName = "./example.log"
+Level = 6
+
+[components.template]
+type = "template"
+Path = "./views/*.tpl"
+
+[components.session]
+type = "session"
