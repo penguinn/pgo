@@ -44,6 +44,3 @@ Password = ""
 [components.template]
 type = "template"
 Path = "./views/*.tpl"
-
-[components.session]
-type = "session"
