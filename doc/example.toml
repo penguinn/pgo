@@ -19,6 +19,7 @@ type = "container"
 type = "mysql"
 Driver = "mysql"
 Dsn = "user:password@tcp(ip:port)/database"
+Reads = ["user:password@tcp(ip:port)/database","user:password@tcp(ip:port)/database"]
 [components.mysql.local]
 type = "mysql"
 Driver = "mysql"

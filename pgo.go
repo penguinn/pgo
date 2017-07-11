@@ -68,10 +68,10 @@ func Init(configFile string, args ...interface{}) error {
 	if len(viper.GetStringMap("components.redis")) != 0 {
 		app.Register("redis", redis.Creator)
 	}
-	if len(viper.GetStringMap("components.router")) != 0 && viper.GetString("components.router.type") == "http"{
+	if len(viper.GetStringMap("components.router")) != 0 && viper.GetString("components.router.type") == "web"{
 		app.Register("http", router.CreatorHttp)
 	}
-	if len(viper.GetStringMap("components.router")) != 0 && viper.GetString("components.router.type") == "rpc"{
+	if len(viper.GetStringMap("components.router")) != 0 && viper.GetString("components.router.type") == "jsonrpc2"{
 		app.Register("rpc", router.CreatorRpc)
 	}
 	if len(viper.GetStringMap("components.template")) != 0 {

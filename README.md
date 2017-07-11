@@ -44,9 +44,22 @@
 * redis: https://godoc.org/github.com/go-redis/redis
 
 ## 配置文件详解 ##
-[实例模板][实例模板]  
+[实例模板][实例模板]  中的components内容是通过关键字自动配置生成相应组件，另可新增配置，新增配置同样可在自己的项目中通过viper获得
 
-[实例模板]: https://github.com/penguinn/pgo/tree/master/doc/example.toml
+[实例模板]: https://github.com/penguinn/pgo/tree/master/doc/example.toml  
+
+### server  
+* type: 选择web、thrift、jsonrpc2中的一种
+* addr: 服务启动port
+* log: 选择seelog的配置文件，若这个字段不填，则使用默认配置
+### components.router
+* type: 可选web和jsonrpc2，分别部署不同形式的handler
+* default：为一个数组，里面包括不同的路径路由到不同的handler上
+### components.mysql
+mysql的配置，如果不是用mysql可以删除掉mysql的配置
+* type: 必填container，用于生成mysql子容器
+* default：在container中生成default数据库
+* 
 
 ## 开发实例 ##
 1. web开发  
