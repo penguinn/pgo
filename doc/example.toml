@@ -40,15 +40,6 @@ type = "redis"
 Address = "ip:port"
 Password = ""
 
-[components.logger]
-type = "container"
-
-[components.logger.default]
-type = "logger"
-Default = true
-FileName = "./example.log"
-Level = 6
-
 [components.template]
 type = "template"
 Path = "./views/*.tpl"
