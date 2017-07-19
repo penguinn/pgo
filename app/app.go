@@ -6,7 +6,6 @@ import (
 	"github.com/penguinn/pgo/container"
 	"github.com/penguinn/pgo/database/mysql"
 	"gopkg.in/mgo.v2"
-	"fmt"
 	"github.com/penguinn/pgo/database/mongo"
 )
 
