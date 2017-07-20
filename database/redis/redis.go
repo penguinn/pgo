@@ -7,6 +7,11 @@ import (
 	"github.com/mitchellh/mapstructure"
 )
 
+type RedisDB struct {
+	Config 			*RedisConfig
+	Redis 			*redis.Client
+}
+
 type RedisConfig struct {
 	Address        	string
 	Password 		string
@@ -15,7 +20,7 @@ type RedisConfig struct {
 	WriteTimeout   	time.Duration
 }
 
-func NewRedis(cfg *RedisConfig) (*redis.Client, error) {
+func NewRedis(cfg *RedisConfig) (*RedisDB, error) {
 
 	client := redis.NewClient(&redis.Options{
 		Addr:cfg.Address,
@@ -26,7 +31,12 @@ func NewRedis(cfg *RedisConfig) (*redis.Client, error) {
 
 	})
 
-	return client, nil
+	db := &RedisDB{
+		Config:cfg,
+		Redis:client,
+	}
+
+	return db, nil
 }
 
 func Creator(cfg interface{}) (interface{}, error) {
@@ -39,4 +49,8 @@ func Creator(cfg interface{}) (interface{}, error) {
 	redisConfig.ReadTimeout = redisConfig.ReadTimeout * time.Millisecond
 	redisConfig.WriteTimeout = redisConfig.WriteTimeout * time.Millisecond
 	return NewRedis(&redisConfig)
+}
+
+func (this *RedisDB) Get(write bool) *redis.Client {
+	return this.Redis
 }
