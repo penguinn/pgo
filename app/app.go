@@ -80,8 +80,8 @@ type Model interface {
 	ConnName() string
 }
 
-func UseModel(name string, m Model, write bool) interface{} {
-	d, err := Get(name, m.ConnName())
+func UseModel(name string, subName string, write bool) interface{} {
+	d, err := Get(name, subName)
 	if err == nil {
 		switch name {
 		case "mysql":
