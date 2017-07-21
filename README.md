@@ -1,5 +1,5 @@
 # pgo #
-* go的基础开发框架，在这里集成了日志，配置文件，数据库等东西，目前仅支持web，thrift，jsonrpc2的开发 
+* go的基础开发框架，在这里集成了日志，配置文件，数据库等东西，目前仅支持web，thrift，jsonrpc2和rpcx的开发 
 
 ## 开发流程 ##
 1. go版本
@@ -49,7 +49,7 @@
 [实例模板]: https://github.com/penguinn/pgo/tree/master/doc/example.toml  
 
 ### server  
-1. type: 选择web、thrift、jsonrpc2中的一种
+1. type: 选择web、thrift、jsonrpc2和rpcx中的一种
 2. addr: 服务启动port
 3. log: 选择seelog的配置文件，若这个字段不填，则使用默认配置
 ### components.router
