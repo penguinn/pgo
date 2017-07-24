@@ -97,6 +97,10 @@ func (client *Client) send(ctx context.Context, call *Call) {
 	client.pending[seq] = call
 	client.mutex.Unlock()
 
+	if cseq, ok := ctx.Value(seqKey{}).(*uint64); ok {
+		*cseq = seq
+	}
+
 	// Encode and send the request.
 	client.request.Seq = seq
 	header, ok := FromContext(ctx)
@@ -297,10 +301,20 @@ func Dial(network, address string) (*Client, error) {
 // shutting down, ErrShutdown is returned.
 func (client *Client) Close() error {
 	client.mutex.Lock()
+
+	for seq, call := range client.pending {
+		delete(client.pending, seq)
+		if call != nil {
+			call.Error = ErrShutdown
+			call.done()
+		}
+	}
+
 	if client.closing || client.shutdown {
 		client.mutex.Unlock()
 		return ErrShutdown
 	}
+
 	client.closing = true
 	client.mutex.Unlock()
 	return client.codec.Close()
@@ -345,15 +359,15 @@ func (client *Client) Go(ctx context.Context, serviceMethod string, args interfa
 
 // Call invokes the named function, waits for it to complete, and returns its error status.
 func (client *Client) Call(ctx context.Context, serviceMethod string, args interface{}, reply interface{}) error {
+	seq := new(uint64)
+	ctx = context.WithValue(ctx, seqKey{}, seq)
 	Done := client.Go(ctx, serviceMethod, args, reply, make(chan *Call, 1)).Done
 
 	var err error
 	select {
 	case <-ctx.Done(): //cancel by context
-		client.mutex.Lock()
-		call := client.pending[client.seq]
-		delete(client.pending, client.seq)
-		client.mutex.Unlock()
+		call := client.pending[*seq]
+		delete(client.pending, *seq)
 		if call != nil {
 			call.Error = ctx.Err()
 			call.done()

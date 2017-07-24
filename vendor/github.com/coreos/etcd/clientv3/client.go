@@ -31,6 +31,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -182,7 +183,7 @@ func parseEndpoint(endpoint string) (proto string, host string, scheme string) {
 	host = url.Host
 	switch url.Scheme {
 	case "http", "https":
-	case "unix":
+	case "unix", "unixs":
 		proto = "unix"
 		host = url.Host + url.Path
 	default:
@@ -197,7 +198,7 @@ func (c *Client) processCreds(scheme string) (creds *credentials.TransportCreden
 	case "unix":
 	case "http":
 		creds = nil
-	case "https":
+	case "https", "unixs":
 		if creds != nil {
 			break
 		}
@@ -214,6 +215,16 @@ func (c *Client) processCreds(scheme string) (creds *credentials.TransportCreden
 func (c *Client) dialSetupOpts(endpoint string, dopts ...grpc.DialOption) (opts []grpc.DialOption) {
 	if c.cfg.DialTimeout > 0 {
 		opts = []grpc.DialOption{grpc.WithTimeout(c.cfg.DialTimeout)}
+	}
+	if c.cfg.DialKeepAliveTime > 0 {
+		params := keepalive.ClientParameters{
+			Time: c.cfg.DialKeepAliveTime,
+		}
+		// Only relevant when KeepAliveTime is non-zero
+		if c.cfg.DialKeepAliveTimeout > 0 {
+			params.Timeout = c.cfg.DialKeepAliveTimeout
+		}
+		opts = append(opts, grpc.WithKeepaliveParams(params))
 	}
 	opts = append(opts, dopts...)
 
@@ -322,7 +333,7 @@ func (c *Client) dial(endpoint string, dopts ...grpc.DialOption) (*grpc.ClientCo
 
 	opts = append(opts, c.cfg.DialOptions...)
 
-	conn, err := grpc.Dial(host, opts...)
+	conn, err := grpc.DialContext(c.ctx, host, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -333,7 +344,7 @@ func (c *Client) dial(endpoint string, dopts ...grpc.DialOption) (*grpc.ClientCo
 // when the cluster has a leader.
 func WithRequireLeader(ctx context.Context) context.Context {
 	md := metadata.Pairs(rpctypes.MetadataRequireLeaderKey, rpctypes.MetadataHasLeader)
-	return metadata.NewContext(ctx, md)
+	return metadata.NewOutgoingContext(ctx, md)
 }
 
 func newClient(cfg *Config) (*Client, error) {
@@ -367,7 +378,9 @@ func newClient(cfg *Config) (*Client, error) {
 	}
 
 	client.balancer = newSimpleBalancer(cfg.Endpoints)
-	conn, err := client.dial("", grpc.WithBalancer(client.balancer))
+	// use Endpoints[0] so that for https:// without any tls config given, then
+	// grpc will assume the ServerName is in the endpoint.
+	conn, err := client.dial(cfg.Endpoints[0], grpc.WithBalancer(client.balancer))
 	if err != nil {
 		client.cancel()
 		client.balancer.Close()
@@ -502,4 +515,12 @@ func toErr(ctx context.Context, err error) error {
 		err = grpc.ErrClientConnClosing
 	}
 	return err
+}
+
+func canceledByCaller(stopCtx context.Context, err error) bool {
+	if stopCtx.Err() == nil || err == nil {
+		return false
+	}
+
+	return err == context.Canceled || err == context.DeadlineExceeded
 }
