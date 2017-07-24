@@ -1,0 +1,12 @@
+struct RequestHeader {
+	ServiceMethod string
+	Header        string
+	Seq           uint64 
+}
+
+struct ResponseHeader {
+	ServiceMethod string
+	Header        string   
+	Seq           uint64    
+	Error         string    
+}

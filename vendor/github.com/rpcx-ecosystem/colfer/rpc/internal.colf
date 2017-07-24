@@ -1,0 +1,10 @@
+package internal
+
+// Header is a prefix for requests and responses.
+type header struct {
+	seqID    uint64
+	method   text
+	header   text
+	error    text
+	bodySize uint32
+}

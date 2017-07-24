@@ -1,0 +1,15 @@
+syntax = "proto3";
+package wirepb;
+
+message RequestHeader {
+	string method               = 1;
+	uint64 seq                  = 2;
+	string header               = 3;
+}
+
+message ResponseHeader {
+	string method               = 1;
+	uint64 seq                  = 2;
+	string error                = 3;
+	string header               = 4;
+}
