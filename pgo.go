@@ -75,7 +75,7 @@ func Init(configFile string, args ...interface{}) error {
 	if len(viper.GetStringMap("components.redis")) != 0 {
 		app.Register("redis", redis.Creator)
 	}
-	if len(viper.GetStringMap("components.router")) != 0 && viper.GetString("components.router.type") == "web"{
+	if len(viper.GetStringMap("components.router")) != 0 && viper.GetString("components.router.type") == "http"{
 		app.Register("http", router.CreatorHttp)
 	}
 	if len(viper.GetStringMap("components.router")) != 0 && viper.GetString("components.router.type") == "jsonrpc2"{
