@@ -80,7 +80,7 @@ mongo配置，如果不适用mongo数据库可以删除掉mongo的配置
 
 ## 开发实例 ##
 1. http开发  
-* 位置：https://github.com/penguinn/pgo-test/tree/master/web
+* 位置：https://github.com/penguinn/pgo-test/tree/master/http
 * 注意：初始化的时候需要传入handler实例的地址
 
 2. thrift开发 

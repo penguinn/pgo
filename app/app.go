@@ -6,7 +6,8 @@ import (
 	"github.com/penguinn/pgo/database/mysql"
 	"gopkg.in/mgo.v2"
 	"github.com/penguinn/pgo/database/mongo"
-	"github.com/penguinn/pgo/database/redis"
+	rd "github.com/penguinn/pgo/database/redis"
+	"github.com/go-redis/redis"
 )
 
 func Register(name string, creator container.Creator) {
@@ -48,16 +49,16 @@ func GetMongo(name string) (*mgo.Database, error){
 	return nil, err
 }
 
-//func GetRedis(name string) (*redis.Client, error) {
-//	r, err := container.DefaultContainer.Get("redis", name)
-//	if err == nil {
-//		if rr, ok := r.(*redis.Client); ok {
-//			return rr, nil
-//		}
-//		return nil, err
-//	}
-//	return nil, err
-//}
+func GetRedis(name string) (*redis.Client, error) {
+	r, err := container.DefaultContainer.Get("redis", name)
+	if err == nil {
+		if rr, ok := r.(*redis.Client); ok {
+			return rr, nil
+		}
+		return nil, err
+	}
+	return nil, err
+}
 
 func GetMySQL(name string) (*mysql.DB, error) {
 	instance, err := container.DefaultContainer.Get("mysql", name)
@@ -89,7 +90,7 @@ func UseModel(name string, subName string, write bool) interface{} {
 		case "mongo":
 			return d.(*mongo.MongoDB).Get(write)
 		case "redis":
-			return d.(*redis.RedisDB).Get(write)
+			return d.(*rd.RedisDB).Get(write)
 		}
 	}
 	return nil
