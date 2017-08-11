@@ -36,7 +36,7 @@ func Init(configFile string, args ...interface{}) error {
 	runMode := viper.GetString("server.type")
 	if len(runMode) != 0{
 		switch runMode {
-		case "web":
+		case "http":
 			if len(args) == 1{
 				router.InitHttp(args[0])
 			}else{
@@ -92,7 +92,7 @@ func Run() error {
 	runMode := viper.GetString("server.type")
 	if len(runMode) != 0{
 		switch runMode {
-		case "web":
+		case "http":
 			err := http.ListenAndServe(viper.GetString("server.addr"), nil)
 			if err != nil{
 				log.Fatal("ListenAndServer: ", err)

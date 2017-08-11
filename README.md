@@ -1,5 +1,5 @@
 # pgo #
-* go的基础开发框架，在这里集成了日志，配置文件，数据库等东西，目前仅支持web，thrift，jsonrpc2和rpcx的开发 
+* go的基础开发框架，在这里集成了日志，配置文件，数据库等东西，目前仅支持http，thrift，jsonrpc2和rpcx的开发 
 
 ## 开发流程 ##
 1. go版本
@@ -49,11 +49,11 @@
 [实例模板]: https://github.com/penguinn/pgo/tree/master/doc/example.toml  
 
 ### server  
-1. type: 选择web、thrift、jsonrpc2和rpcx中的一种
+1. type: 选择http、thrift、jsonrpc2和rpcx中的一种
 2. addr: 服务启动port
 3. log: 选择seelog的配置文件，若这个字段不填，则使用默认配置
 ### components.router
-1. type: 可选web和jsonrpc2，分别部署不同形式的handler
+1. type: 可选http和jsonrpc2，分别部署不同形式的handler
 2. default：为一个数组，里面包括不同的路径路由到不同的handler上
 ### components.mysql
 mysql配置，如果不是用mysql可以删除掉mysql的配置
@@ -79,7 +79,7 @@ mongo配置，如果不适用mongo数据库可以删除掉mongo的配置
 
 
 ## 开发实例 ##
-1. web开发  
+1. http开发  
 * 位置：https://github.com/penguinn/pgo-test/tree/master/web
 * 注意：初始化的时候需要传入handler实例的地址
 
